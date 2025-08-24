@@ -1,7 +1,6 @@
 # sqlitebp - SQLite Best Practices for Go
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/jacob2161/sqlitebp.svg)](https://pkg.go.dev/github.com/jacob2161/sqlitebp)
-[![Go Report Card](https://goreportcard.com/badge/github.com/jacob2161/sqlitebp)](https://goreportcard.com/report/github.com/jacob2161/sqlitebp)
 [![Coverage](https://img.shields.io/badge/coverage-94%25-brightgreen.svg)](https://github.com/jacob2161/sqlitebp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/go-%3E%3D1.25-blue.svg)](https://go.dev/)
@@ -14,15 +13,42 @@
 go get github.com/jacob2161/sqlitebp
 ```
 
-## Quick Start
+## Examples
 
 ### Open for read/write (create if required)
 
 ```go
-// Creates or opens the database with best-practice defaults
-// (WAL, foreign keys, busy timeout, NORMAL synchronous, private cache, etc.)
-db, err := sqlitebp.OpenReadWriteCreate("app.db")
-if err != nil { log.Fatal(err) }
+package main
+
+import (
+    "fmt"
+    "log"
+
+    "github.com/jacob2161/sqlitebp"
+)
+
+func main() {
+    // Creates or opens the database with best-practice defaults
+    // (WAL, foreign keys, busy timeout, NORMAL synchronous, private cache, etc.)
+    db, err := sqlitebp.OpenReadWriteCreate("app.db")
+    if err != nil { log.Fatal(err) }
+    defer db.Close()
+
+    // Create a table (STRICT for stronger type enforcement)
+    if _, err := db.Exec(`CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT NOT NULL) STRICT`); err != nil {
+        log.Fatal(err)
+    }
+    // Insert a row
+    if _, err := db.Exec(`INSERT INTO users (name) VALUES (?)`, "Alice"); err != nil {
+        log.Fatal(err)
+    }
+    // Query a value
+    var count int
+    if err := db.QueryRow(`SELECT COUNT(*) FROM users`).Scan(&count); err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println("User rows:", count)
+}
 ```
 
 ### Open existing read/write
@@ -30,6 +56,9 @@ if err != nil { log.Fatal(err) }
 ```go
 db, err := sqlitebp.OpenReadWrite("app.db")
 if err != nil { log.Fatal(err) }
+// e.g. read previously inserted rows
+var n int
+if err := db.QueryRow(`SELECT COUNT(*) FROM users`).Scan(&n); err != nil { log.Fatal(err) }
 ```
 
 ### Read-only
@@ -37,6 +66,8 @@ if err != nil { log.Fatal(err) }
 ```go
 db, err := sqlitebp.OpenReadOnly("app.db")
 if err != nil { log.Fatal(err) }
+var n int
+if err := db.QueryRow(`SELECT COUNT(*) FROM users`).Scan(&n); err != nil { log.Fatal(err) }
 ```
 
 ### With Options
