@@ -31,7 +31,9 @@ func main() {
     // Creates or opens the database with best-practice defaults
     // (WAL, foreign keys, busy timeout, NORMAL synchronous, private cache, etc.)
     db, err := sqlitebp.OpenReadWriteCreate("app.db")
-    if err != nil { log.Fatal(err) }
+    if err != nil {
+        log.Fatal(err)
+    }
     defer db.Close()
 
     // Create a table (STRICT for stronger type enforcement)
