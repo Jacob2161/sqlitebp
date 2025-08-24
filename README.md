@@ -55,19 +55,27 @@ func main() {
 
 ```go
 db, err := sqlitebp.OpenReadWrite("app.db")
-if err != nil { log.Fatal(err) }
+if err != nil {
+    log.Fatal(err)
+}
 // e.g. read previously inserted rows
 var n int
-if err := db.QueryRow(`SELECT COUNT(*) FROM users`).Scan(&n); err != nil { log.Fatal(err) }
+if err := db.QueryRow(`SELECT COUNT(*) FROM users`).Scan(&n); err != nil {
+    log.Fatal(err)
+}
 ```
 
 ### Read-only
 
 ```go
 db, err := sqlitebp.OpenReadOnly("app.db")
-if err != nil { log.Fatal(err) }
+if err != nil {
+    log.Fatal(err)
+}
 var n int
-if err := db.QueryRow(`SELECT COUNT(*) FROM users`).Scan(&n); err != nil { log.Fatal(err) }
+if err := db.QueryRow(`SELECT COUNT(*) FROM users`).Scan(&n); err != nil {
+    log.Fatal(err)
+}
 ```
 
 ### With Options
@@ -79,7 +87,9 @@ db, err := sqlitebp.OpenReadWriteCreate("app.db",
     sqlitebp.WithCacheSizeMiB(64),
     sqlitebp.WithSynchronous("FULL"),
 )
-if err != nil { log.Fatal(err) }
+if err != nil {
+    log.Fatal(err)
+}
 ```
 
 ### Adjust Journaling Mode
@@ -89,7 +99,9 @@ if err != nil { log.Fatal(err) }
 db, err := sqlitebp.OpenReadWriteCreate("app.db",
     sqlitebp.WithJournalMode("DELETE"),
 )
-if err != nil { log.Fatal(err) }
+if err != nil {
+    log.Fatal(err)
+}
 ```
 
 ### Override temp_store
@@ -99,7 +111,9 @@ if err != nil { log.Fatal(err) }
 db, err := sqlitebp.OpenReadWriteCreate("app.db",
     sqlitebp.WithTempStore("FILE"),
 )
-if err != nil { log.Fatal(err) }
+if err != nil {
+    log.Fatal(err)
+}
 ```
 
 ### Disable PRAGMA optimize
@@ -110,7 +124,9 @@ if err != nil { log.Fatal(err) }
 db, err := sqlitebp.OpenReadWriteCreate("app.db",
     sqlitebp.WithOptimize(false),
 )
-if err != nil { log.Fatal(err) }
+if err != nil {
+    log.Fatal(err)
+}
 ```
 
 (Shared cache is intentionally not supported; private cache is enforced to avoid shared-cache pitfalls.)

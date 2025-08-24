@@ -143,8 +143,8 @@ func openWithMode(filename string, mode internalMode, opts ...Option) (*sql.DB, 
 
 	// Generate a unique driver name for this open.
 	// This could be improved but should be sufficient in practice and it's very simple.
-	dName := fmt.Sprintf("sqlite3_bp_%d_%p", time.Now().UnixNano(), cfg)
-	sql.Register(dName, &sqlite3.SQLiteDriver{
+	driverName := fmt.Sprintf("sqlite3_bp_%d_%p", time.Now().UnixNano(), cfg)
+	sql.Register(driverName, &sqlite3.SQLiteDriver{
 		ConnectHook: func(conn *sqlite3.SQLiteConn) error {
 			// Apply PRAGMA optimize if enabled.
 			if !cfg.disableOptimize { // run optimize unless disabled
@@ -153,10 +153,10 @@ func openWithMode(filename string, mode internalMode, opts ...Option) (*sql.DB, 
 				}
 			}
 			// Apply pragma.s
-			for name, val := range cfg.pragmas {
-				stmt := fmt.Sprintf("PRAGMA %s=%s", name, val)
-				if _, err := conn.Exec(stmt, nil); err != nil {
-					return errors.Join(ErrPragmaExec, fmt.Errorf("failed to execute %q: %w", stmt, err))
+			for name, value := range cfg.pragmas {
+				statement := fmt.Sprintf("PRAGMA %s=%s", name, value)
+				if _, err := conn.Exec(statement, nil); err != nil {
+					return errors.Join(ErrPragmaExec, fmt.Errorf("failed to execute %q: %w", statement, err))
 				}
 			}
 			return nil
@@ -176,7 +176,7 @@ func openWithMode(filename string, mode internalMode, opts ...Option) (*sql.DB, 
 	}
 
 	// Open the database.
-	db, err := sql.Open(dName, dsn)
+	db, err := sql.Open(driverName, dsn)
 	if err != nil {
 		return nil, errors.Join(ErrOpenFailed, fmt.Errorf("failed to open database %q: %w", filename, err))
 	}
