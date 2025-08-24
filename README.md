@@ -3,7 +3,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/jacob2161/sqlitebp.svg)](https://pkg.go.dev/github.com/jacob2161/sqlitebp)
 [![Coverage](https://img.shields.io/badge/coverage-94%25-brightgreen.svg)](https://github.com/jacob2161/sqlitebp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Go Version](https://img.shields.io/badge/go-%3E%3D1.25-blue.svg)](https://go.dev/)
+[![Go Version](https://img.shields.io/badge/go-%3E%3D1.21-blue.svg)](https://go.dev/)
 
 `sqlitebp` provides an opinionated, production-ready configuration for SQLite databases in Go applications. It implements SQLite best practices with sensible defaults focused on safety, performance, and reliability.
 
