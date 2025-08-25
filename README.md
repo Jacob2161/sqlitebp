@@ -131,6 +131,29 @@ if err != nil {
 }
 ```
 
+### Connection pool sizing examples
+
+By default, sqlitebp sets the pool size to a sensible value between 2 and 8 based on GOMAXPROCS. You can override this after opening if you need a single serialized connection, or just rely on the defaults for read‑only access.
+
+```go
+// Single-connection (serialized) read/write/create database
+rwdb, err := sqlitebp.OpenReadWriteCreate("app.db")
+if err != nil {
+    log.Fatal(err)
+}
+// Force a single connection in the pool
+rwdb.SetMaxOpenConns(1)
+rwdb.SetMaxIdleConns(1)
+```
+
+```go
+// Read-only with default adaptive pool size (2-8 based on GOMAXPROCS)
+rodb, err := sqlitebp.OpenReadOnly("app.db")
+if err != nil {
+    log.Fatal(err)
+}
+```
+
 (Shared cache is intentionally not supported; private cache is enforced to avoid shared-cache pitfalls.)
 
 ## Features & Best Practices
