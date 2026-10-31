@@ -3,6 +3,7 @@ package sqlitebp
 import (
 	"errors"
 	"fmt"
+	"math"
 	"strings"
 )
 
@@ -51,7 +52,10 @@ func WithCacheSizeMiB(mib int) Option {
 		if _, exists := c.params["_cache_size"]; exists {
 			return errors.Join(ErrInvalidConfigOption, fmt.Errorf("_cache_size already specified"))
 		}
-		c.params["_cache_size"] = fmt.Sprintf("-%d", mib*1024)
+		if int64(mib) > math.MaxInt64/1024 {
+			return errors.Join(ErrInvalidConfigOption, fmt.Errorf("cache size is too large"))
+		}
+		c.params["_cache_size"] = fmt.Sprintf("-%d", int64(mib)*1024)
 		return nil
 	}
 }
